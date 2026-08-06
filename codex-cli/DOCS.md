@@ -199,6 +199,12 @@ ssh homeassistant-codex
 Then add `homeassistant-codex` under **Settings → Connections** in Codex
 desktop and open `/workspace` as the remote project.
 
+The project contains `/workspace/AGENTS.md`, which Codex reads automatically.
+It explains that the selected project is a Home Assistant app container, lists
+the mounted directories, recommends HA-MCP for live operations, and defines
+basic safety and validation rules. You therefore do not need to repeat the
+workspace layout at the beginning of every conversation.
+
 ## Workspace layout
 
 | Path | Purpose |

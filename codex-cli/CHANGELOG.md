@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1
+
+- Expands `/workspace/AGENTS.md` with automatic English orientation for Codex,
+  including the container boundary, mounted paths, HA-MCP usage, validation,
+  secrets handling, and confirmation requirements.
+- Shows the workspace instruction file in the SSH login message.
+
 ## 0.3.0
 
 - Adds Home Assistant options for Codex approval policy, sandbox mode, web
