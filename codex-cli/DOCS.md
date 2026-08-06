@@ -55,11 +55,16 @@ it expands what an authenticated SSH client can reach through the app.
 
 ## Start and connect
 
-The default host port is `2222`. After starting the app, connect with:
+The default host port is `2222`. The app provides the `root` SSH account only;
+your computer's local username will not exist inside the container. After
+starting the app, connect with:
 
 ```bash
 ssh -p 2222 -i ~/.ssh/id_ed25519_homeassistant root@homeassistant.local
 ```
+
+If the log reports `Invalid user`, explicitly set the SSH user to `root` in
+your command or SSH host configuration.
 
 Authenticate Codex once inside the app:
 

@@ -14,7 +14,6 @@ AuthorizedKeysFile /data/ssh/authorized_keys
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PermitEmptyPasswords no
-UsePAM no
 
 AllowTcpForwarding @ALLOW_TCP_FORWARDING@
 GatewayPorts no

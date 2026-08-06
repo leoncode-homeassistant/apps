@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Removes the unsupported `UsePAM` SSH option from the Alpine-based image.
+- Clarifies that SSH connections must use the `root` account.
+
 ## 0.1.0
 
 - Initial release in the LeonCode Home Assistant Apps repository.
