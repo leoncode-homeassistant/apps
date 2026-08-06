@@ -1,5 +1,5 @@
 name: Codex CLI
-version: "0.1.1"
+version: "0.2.0"
 slug: codex_cli
 description: Run Codex CLI as a secure SSH workspace on Home Assistant OS
 url: "https://github.com/leoncode-homeassistant/apps/tree/main/codex-cli"
@@ -15,11 +15,21 @@ map:
 options:
   authorized_keys: []
   ha_mcp_url: ""
+  codex_provider: custom
+  codex_provider_name: OmniRoute
+  codex_base_url: "https://omniroute.leonapi.de/v1"
+  codex_model: gpt-5.6-sol
+  codex_api_key: null
   allow_tcp_forwarding: false
 schema:
   authorized_keys:
     - str
   ha_mcp_url: str?
+  codex_provider: list(custom|openai)
+  codex_provider_name: str?
+  codex_base_url: url?
+  codex_model: str?
+  codex_api_key: password?
   allow_tcp_forwarding: bool
 ports:
   22/tcp: 2222

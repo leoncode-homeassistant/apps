@@ -5,6 +5,21 @@ configuration:
   ha_mcp_url:
     name: HA-MCP URL
     description: Optional local Streamable HTTP URL provided by HA-MCP. Treat its private path as a credential.
+  codex_provider:
+    name: Codex model provider
+    description: Use a custom OpenAI-compatible Responses provider or connect directly to OpenAI. Authentication is completed separately in Codex.
+  codex_provider_name:
+    name: Provider name
+    description: Optional display name for the custom provider. Ignored when OpenAI is selected.
+  codex_base_url:
+    name: Provider base URL
+    description: Optional custom Responses API URL. Ignored when OpenAI is selected.
+  codex_model:
+    name: Codex model
+    description: Optional model identifier sent to the selected provider. Leave empty to use the Codex default.
+  codex_api_key:
+    name: Provider API key
+    description: Optional masked API key. Leave empty to authenticate later through Codex desktop or the CLI.
   allow_tcp_forwarding:
     name: Allow SSH TCP forwarding
     description: Allow authenticated SSH clients to forward TCP connections through this app.

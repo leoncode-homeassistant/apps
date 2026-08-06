@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0
+
+- Adds a selectable Codex model provider with OmniRoute as the default.
+- Makes the custom provider name, Responses API base URL, and model configurable in Home Assistant.
+- Keeps direct OpenAI usage available without requiring any custom provider settings.
+- Adds an optional masked API-key field while retaining interactive remote authentication.
+- Persists remote Codex authentication under `/data/codex` across app updates.
+- Adds a configurable model identifier, defaulting to `gpt-5.6-sol`.
+- Keeps provider credentials out of the generated Codex configuration, container image, repository, and logs.
+
 ## 0.1.1
 
 - Removes the unsupported `UsePAM` SSH option from the Alpine-based image.

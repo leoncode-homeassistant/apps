@@ -24,6 +24,11 @@ backups, and shared data.
 authorized_keys:
   - ssh-ed25519 AAAA... your-name
 ha_mcp_url: "http://192.168.1.20:9583/private_YOUR_SECRET_PATH"
+codex_provider: custom
+codex_provider_name: OmniRoute
+codex_base_url: "https://omniroute.leonapi.de/v1"
+codex_model: gpt-5.6-sol
+codex_api_key: null
 allow_tcp_forwarding: false
 ```
 
@@ -48,6 +53,54 @@ never commit it to Git, and rotate it if it is exposed.
 When configured, the app maintains a `home_assistant` MCP server entry in
 `/data/codex/config.toml`.
 
+### `codex_provider`
+
+Select `custom` to use an OpenAI-compatible Responses API such as OmniRoute.
+Select `openai` to use Codex's built-in OpenAI provider directly.
+
+With `openai`, the custom provider name and base URL are ignored. You can sign
+in with ChatGPT or enter an OpenAI Platform API key. No proxy is involved.
+
+### `codex_provider_name`
+
+The display name of the custom provider. The default is `OmniRoute`. This
+setting is ignored when `codex_provider` is set to `openai`.
+
+### `codex_base_url`
+
+The custom provider's Responses API base URL. The default is
+`https://omniroute.leonapi.de/v1`. This setting is ignored when
+`codex_provider` is set to `openai`.
+
+### `codex_model`
+
+This optional model identifier is sent to the selected provider. The default
+is `gpt-5.6-sol`, matching the repository maintainer's OmniRoute configuration.
+Leave it empty to let Codex select its own default. When set, the selected
+provider must support the configured model identifier.
+
+### `codex_api_key`
+
+This optional password field provides a convenient way to authenticate during
+app startup. Enter the API key for the selected provider. With `custom`, this
+is the custom provider's key; with `openai`, it is an OpenAI Platform API key.
+
+When the field is set, the app passes the key to the official
+`codex login --with-api-key` command through standard input. Codex stores the
+resulting authentication persistently under `/data/codex`. The key is never
+written to the generated `config.toml`, container image, repository, or logs.
+
+The password field masks the value in the Home Assistant interface, but the
+value remains part of the app configuration and may be included in Home
+Assistant backups. Leave it empty if you prefer to authenticate through the
+Codex desktop dialog or interactively inside the SSH session.
+
+When this field is empty and Codex desktop asks you to authenticate the remote
+CLI, choose **Enter API key** and enter the key belonging to the selected
+provider. For OmniRoute, enter your OmniRoute key, not an OpenAI Platform key.
+Do not choose **Continue with ChatGPT** when `custom` is selected. ChatGPT
+subscription authentication is intended for the direct OpenAI provider.
+
 ### `allow_tcp_forwarding`
 
 Keep this disabled unless SSH port forwarding is explicitly required. Enabling
@@ -69,8 +122,12 @@ your command or SSH host configuration.
 Authenticate Codex once inside the app:
 
 ```bash
-codex login --device-auth
+codex login --with-api-key
 ```
+
+When connecting through Codex desktop, its authentication dialog performs the
+same persistent remote login. You normally do not need to run the command
+manually.
 
 Codex authentication and configuration are stored under `/data/codex` and
 survive app updates.
