@@ -7,6 +7,7 @@ ARG CODEX_VERSION=0.146.1
 RUN apk add --no-cache \
         bash \
         bash-completion \
+        bubblewrap \
         ca-certificates \
         curl \
         git \
@@ -21,6 +22,7 @@ RUN apk add --no-cache \
         vim \
     && npm install --global "@openai/codex@${CODEX_VERSION}" \
     && npm cache clean --force \
+    && bwrap --version \
     && codex --version
 
 COPY rootfs /

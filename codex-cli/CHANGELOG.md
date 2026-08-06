@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- Installs the Alpine `bubblewrap` package for Codex's Linux sandbox.
+- Verifies `bwrap` during the container build so missing sandbox prerequisites fail early.
+
 ## 0.2.1
 
 - Uses direct OpenAI with no explicit model as the neutral default.

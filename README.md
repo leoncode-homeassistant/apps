@@ -13,7 +13,7 @@ container image.
 
 | App | Description | Architectures | Version |
 | --- | --- | --- | --- |
-| [Codex CLI](codex-cli) | Run OpenAI Codex CLI as a secure SSH-accessible workspace on Home Assistant OS. | `amd64`, `aarch64` | `0.2.1` |
+| [Codex CLI](codex-cli) | Run OpenAI Codex CLI as a secure SSH-accessible workspace on Home Assistant OS. | `amd64`, `aarch64` | `0.2.2` |
 
 ## Add this repository to Home Assistant
 

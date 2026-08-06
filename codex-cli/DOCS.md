@@ -18,6 +18,12 @@ The app intentionally does not receive the Docker socket or unrestricted host
 access. It does receive read-write access to the Home Assistant configuration,
 backups, and shared data.
 
+The image includes the distribution-provided `bubblewrap` executable used by
+Codex's Linux sandbox. The actual sandbox also depends on the namespace and
+seccomp operations allowed by the Home Assistant host. If the host blocks
+nested sandboxing, the app container may not be able to provide Codex's nested
+Linux sandbox even though `bubblewrap` is installed.
+
 ## Configuration
 
 ```yaml
