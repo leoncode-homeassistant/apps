@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Adds Home Assistant options for Codex approval policy, sandbox mode, web
+  search, response verbosity, reasoning summaries, and reasoning effort.
+- Adds a Home Assistant option that allows or disables installed Codex plugins.
+- Keeps model-specific and Codex defaults available without forcing overrides.
+
 ## 0.2.2
 
 - Installs the Alpine `bubblewrap` package for Codex's Linux sandbox.

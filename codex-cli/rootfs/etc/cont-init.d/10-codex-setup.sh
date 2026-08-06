@@ -37,12 +37,41 @@ codex_provider="$(bashio::config 'codex_provider')"
 codex_provider_name="$(bashio::config 'codex_provider_name')"
 codex_base_url="$(bashio::config 'codex_base_url')"
 codex_model="$(bashio::config 'codex_model')"
+codex_approval_policy='default'
+codex_sandbox_mode='default'
+codex_web_search='default'
+codex_model_verbosity='default'
+codex_reasoning_summary='default'
+codex_reasoning_effort='default'
+for option in \
+    codex_approval_policy \
+    codex_sandbox_mode \
+    codex_web_search \
+    codex_model_verbosity \
+    codex_reasoning_summary \
+    codex_reasoning_effort; do
+    if bashio::config.has_value "${option}"; then
+        printf -v "${option}" '%s' "$(bashio::config "${option}")"
+    fi
+done
+codex_plugins_enabled='true'
+if bashio::config.has_value 'codex_plugins_enabled' \
+    && ! bashio::config.true 'codex_plugins_enabled'; then
+    codex_plugins_enabled='false'
+fi
 python3 /usr/local/bin/configure-codex.py \
     "${mcp_url}" \
     "${codex_provider}" \
     "${codex_provider_name}" \
     "${codex_base_url}" \
-    "${codex_model}"
+    "${codex_model}" \
+    "${codex_approval_policy}" \
+    "${codex_sandbox_mode}" \
+    "${codex_web_search}" \
+    "${codex_model_verbosity}" \
+    "${codex_reasoning_summary}" \
+    "${codex_reasoning_effort}" \
+    "${codex_plugins_enabled}"
 
 if bashio::config.has_value 'codex_api_key'; then
     codex_api_key="$(bashio::config 'codex_api_key')"
@@ -63,6 +92,7 @@ sed "s/@ALLOW_TCP_FORWARDING@/${tcp_forwarding}/" \
 chmod 0600 /etc/ssh/sshd_config
 
 bashio::log.info 'The Codex workspace is ready at /workspace.'
+bashio::log.info "Codex runtime defaults: approvals=${codex_approval_policy}, sandbox=${codex_sandbox_mode}, web search=${codex_web_search}."
 if [[ "${codex_provider}" == 'custom' ]]; then
     bashio::log.info "Codex model provider: ${codex_provider_name} (${codex_base_url}); model: ${codex_model}."
 else

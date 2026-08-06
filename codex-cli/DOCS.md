@@ -35,6 +35,13 @@ codex_provider_name: ""
 codex_base_url: ""
 codex_model: ""
 codex_api_key: ""
+codex_approval_policy: default
+codex_sandbox_mode: default
+codex_web_search: default
+codex_model_verbosity: default
+codex_reasoning_summary: default
+codex_reasoning_effort: default
+codex_plugins_enabled: true
 allow_tcp_forwarding: false
 ```
 
@@ -104,6 +111,40 @@ CLI, choose **Enter API key** and enter the key belonging to the selected
 provider. For OmniRoute, enter your OmniRoute key, not an OpenAI Platform key.
 Do not choose **Continue with ChatGPT** when `custom` is selected. ChatGPT
 subscription authentication is intended for the direct OpenAI provider.
+
+### Codex runtime defaults
+
+The following options write persistent defaults to Codex's managed section in
+`/data/codex/config.toml`. Select `default` to omit a setting and let Codex or
+the selected model choose its normal behavior:
+
+- `codex_approval_policy`: `untrusted`, `on-request`, or `never`;
+- `codex_sandbox_mode`: `read-only`, `workspace-write`, or
+  `danger-full-access`;
+- `codex_web_search`: `disabled`, `cached`, `indexed`, or `live`;
+- `codex_model_verbosity`: `low`, `medium`, or `high`;
+- `codex_reasoning_summary`: `auto`, `concise`, `detailed`, or `none`;
+- `codex_reasoning_effort`: `minimal`, `low`, `medium`, `high`, `xhigh`, or
+  `ultra`, when supported by the selected model.
+
+`danger-full-access` removes Codex's nested command sandbox, but it does not
+escape the Home Assistant app container. It still gives Codex unrestricted
+access to all paths and network resources available inside that container,
+including the mounted Home Assistant configuration, backups, and shared data.
+
+`never` prevents interactive approval prompts. Use it only when unattended
+operation is intentional and the selected sandbox provides sufficient
+protection.
+
+The desktop setting that controls which reasoning levels appear in its model
+picker is local UI state and is not a Codex CLI runtime default. The app option
+therefore configures the reasoning effort actually used by new Codex sessions.
+
+### `codex_plugins_enabled`
+
+When disabled, the app writes a system Codex requirement that blocks installed
+plugins. When enabled, it leaves plugin availability unconstrained. This option
+does not install, remove, or individually enable plugins.
 
 ### `allow_tcp_forwarding`
 

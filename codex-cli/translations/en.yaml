@@ -20,6 +20,27 @@ configuration:
   codex_api_key:
     name: Provider API key
     description: Optional masked API key. Leave empty to authenticate later through Codex desktop or the CLI.
+  codex_approval_policy:
+    name: Approval policy
+    description: Choose when Codex asks for approval before running commands. Default leaves the decision to Codex.
+  codex_sandbox_mode:
+    name: Sandbox mode
+    description: Limit filesystem and network access for commands. Full access applies only inside the isolated app container.
+  codex_web_search:
+    name: Web search
+    description: Choose whether Codex disables search, uses cached or indexed results, or accesses the live web.
+  codex_model_verbosity:
+    name: Response detail
+    description: Override the response verbosity for compatible Responses API models, or use the model default.
+  codex_reasoning_summary:
+    name: Reasoning summary
+    description: Choose the detail level of reasoning summaries for supported models.
+  codex_reasoning_effort:
+    name: Reasoning effort
+    description: Set the default reasoning effort for supported models, or leave model selection unchanged.
+  codex_plugins_enabled:
+    name: Allow plugins
+    description: Leave installed Codex plugins available. Disabling this blocks plugins but does not uninstall them.
   allow_tcp_forwarding:
     name: Allow SSH TCP forwarding
     description: Allow authenticated SSH clients to forward TCP connections through this app.

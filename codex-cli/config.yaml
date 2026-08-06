@@ -1,5 +1,5 @@
 name: Codex CLI
-version: "0.2.2"
+version: "0.3.0"
 slug: codex_cli
 description: Run Codex CLI as a secure SSH workspace on Home Assistant OS
 url: "https://github.com/leoncode-homeassistant/apps/tree/main/codex-cli"
@@ -20,6 +20,13 @@ options:
   codex_base_url: ""
   codex_model: ""
   codex_api_key: ""
+  codex_approval_policy: default
+  codex_sandbox_mode: default
+  codex_web_search: default
+  codex_model_verbosity: default
+  codex_reasoning_summary: default
+  codex_reasoning_effort: default
+  codex_plugins_enabled: true
   allow_tcp_forwarding: false
 schema:
   authorized_keys:
@@ -30,6 +37,13 @@ schema:
   codex_base_url: url?
   codex_model: str?
   codex_api_key: password
+  codex_approval_policy: list(default|untrusted|on-request|never)
+  codex_sandbox_mode: list(default|read-only|workspace-write|danger-full-access)
+  codex_web_search: list(default|disabled|cached|indexed|live)
+  codex_model_verbosity: list(default|low|medium|high)
+  codex_reasoning_summary: list(default|auto|concise|detailed|none)
+  codex_reasoning_effort: list(default|minimal|low|medium|high|xhigh|ultra)
+  codex_plugins_enabled: bool
   allow_tcp_forwarding: bool
 ports:
   22/tcp: 2222
