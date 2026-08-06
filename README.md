@@ -17,6 +17,11 @@ container image.
 
 ## Add this repository to Home Assistant
 
+[![Open your Home Assistant instance and add the LeonCode app repository.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fleoncode-homeassistant%2Fapps)
+
+Click the button above to open your Home Assistant instance with this app
+repository pre-filled. If the redirect is unavailable, add it manually:
+
 1. Open **Settings → Apps → App store** in Home Assistant.
 2. Open the menu in the top-right corner and select **Repositories**.
 3. Add this URL:
