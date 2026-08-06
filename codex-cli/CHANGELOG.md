@@ -1,8 +1,14 @@
 # Changelog
 
+## 0.2.1
+
+- Uses direct OpenAI with no explicit model as the neutral default.
+- Removes all prefilled OmniRoute provider values.
+- Uses an empty masked API-key value instead of `null`, allowing Home Assistant to save the configuration without a key.
+
 ## 0.2.0
 
-- Adds a selectable Codex model provider with OmniRoute as the default.
+- Adds a selectable Codex model provider.
 - Makes the custom provider name, Responses API base URL, and model configurable in Home Assistant.
 - Keeps direct OpenAI usage available without requiring any custom provider settings.
 - Adds an optional masked API-key field while retaining interactive remote authentication.

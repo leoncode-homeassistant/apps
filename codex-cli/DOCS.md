@@ -24,11 +24,11 @@ backups, and shared data.
 authorized_keys:
   - ssh-ed25519 AAAA... your-name
 ha_mcp_url: "http://192.168.1.20:9583/private_YOUR_SECRET_PATH"
-codex_provider: custom
-codex_provider_name: OmniRoute
-codex_base_url: "https://omniroute.leonapi.de/v1"
-codex_model: gpt-5.6-sol
-codex_api_key: null
+codex_provider: openai
+codex_provider_name: ""
+codex_base_url: ""
+codex_model: ""
+codex_api_key: ""
 allow_tcp_forwarding: false
 ```
 
@@ -63,21 +63,19 @@ in with ChatGPT or enter an OpenAI Platform API key. No proxy is involved.
 
 ### `codex_provider_name`
 
-The display name of the custom provider. The default is `OmniRoute`. This
-setting is ignored when `codex_provider` is set to `openai`.
+The display name of the custom provider. It is empty by default and ignored
+when `codex_provider` is set to `openai`.
 
 ### `codex_base_url`
 
-The custom provider's Responses API base URL. The default is
-`https://omniroute.leonapi.de/v1`. This setting is ignored when
-`codex_provider` is set to `openai`.
+The custom provider's Responses API base URL. It is empty by default and
+ignored when `codex_provider` is set to `openai`.
 
 ### `codex_model`
 
-This optional model identifier is sent to the selected provider. The default
-is `gpt-5.6-sol`, matching the repository maintainer's OmniRoute configuration.
-Leave it empty to let Codex select its own default. When set, the selected
-provider must support the configured model identifier.
+This optional model identifier is sent to the selected provider. It is empty
+by default so Codex selects its own default. When set, the selected provider
+must support the configured model identifier.
 
 ### `codex_api_key`
 
