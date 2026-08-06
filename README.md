@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/leoncode-homeassistant/apps)](LICENSE)
 
 A curated collection of Home Assistant apps maintained by
-**LeonCode Home Assistant**. Each app lives in its own directory, has an
+**LeonCode**. Each app lives in its own directory, has an
 independent version and changelog, and is published as a multi-architecture
 container image.
 
@@ -24,7 +24,6 @@ container image.
    ```text
    https://github.com/leoncode-homeassistant/apps
    ```
-
 4. Reload the app store.
 5. Select and install the app you want.
 
