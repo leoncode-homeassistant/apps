@@ -1,0 +1,82 @@
+name: Builder
+
+env:
+  MONITORED_FILES: "config.json config.yaml config.yml Dockerfile rootfs"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    name: Discover changed apps
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+      apps: ${{ steps.filter.outputs.apps }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Find changed files
+        id: changed_files
+        uses: tj-actions/changed-files@v47
+
+      - name: Find app directories
+        id: apps
+        uses: home-assistant/actions/helpers/find-addons@master
+
+      - name: Select apps to build
+        id: filter
+        shell: bash
+        env:
+          ALL_APPS: ${{ steps.apps.outputs.addons }}
+          CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          selected=()
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]] \
+            || [[ "$CHANGED_FILES" =~ \.github/workflows/(builder|build-app)\.yaml ]]; then
+            selected=($ALL_APPS)
+          else
+            for app in $ALL_APPS; do
+              for file in $MONITORED_FILES; do
+                if [[ "$CHANGED_FILES" =~ (^|[[:space:]])${app}/${file} ]]; then
+                  selected+=("$app")
+                  break
+                fi
+              done
+            done
+          fi
+
+          if (( ${#selected[@]} )); then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "apps=$(jq -nc '$ARGS.positional' --args "${selected[@]}")" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo 'apps=[]' >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: Build ${{ matrix.app }}
+    needs: discover
+    if: needs.discover.outputs.changed == 'true'
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.discover.outputs.apps) }}
+    uses: ./.github/workflows/build-app.yaml
+    with:
+      app: ${{ matrix.app }}
+      publish: ${{ github.event_name != 'pull_request' }}
+    secrets: inherit

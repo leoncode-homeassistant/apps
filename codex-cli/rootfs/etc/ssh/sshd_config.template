@@ -1,0 +1,27 @@
+LogLevel INFO
+Port 22
+AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+AuthorizedKeysFile /data/ssh/authorized_keys
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+UsePAM no
+
+AllowTcpForwarding @ALLOW_TCP_FORWARDING@
+GatewayPorts no
+X11Forwarding no
+PermitTunnel no
+AllowAgentForwarding no
+
+PrintMotd yes
+Banner none
+Subsystem sftp /usr/lib/ssh/sftp-server

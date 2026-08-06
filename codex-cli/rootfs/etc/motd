@@ -1,0 +1,5 @@
+Home Assistant Codex CLI
+
+Arbeitsbereich: /workspace
+HA-Konfiguration: /homeassistant
+Codex-Anmeldung: codex login --device-auth

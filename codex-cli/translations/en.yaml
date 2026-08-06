@@ -1,0 +1,12 @@
+configuration:
+  authorized_keys:
+    name: Authorized SSH keys
+    description: Public SSH keys allowed to sign in. Password login is disabled.
+  ha_mcp_url:
+    name: HA-MCP URL
+    description: Optional local Streamable HTTP URL provided by HA-MCP. Treat its private path as a credential.
+  allow_tcp_forwarding:
+    name: Allow SSH TCP forwarding
+    description: Allow authenticated SSH clients to forward TCP connections through this app.
+network:
+  22/tcp: SSH port
