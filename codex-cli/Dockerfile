@@ -2,7 +2,7 @@ ARG BUILD_ARCH
 ARG BUILD_FROM=ghcr.io/home-assistant/base:3.23-2026.04.0
 FROM ${BUILD_FROM}
 
-ARG CODEX_VERSION=0.146.1
+ARG CODEX_VERSION=0.153.4
 
 RUN apk add --no-cache \
         bash \
