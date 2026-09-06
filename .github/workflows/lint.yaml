@@ -2,6 +2,12 @@ name: Lint
 
 on:
   workflow_dispatch:
+    inputs:
+      app:
+        description: Optional app directory to lint
+        required: false
+        type: string
+        default: ""
   push:
     branches: [main]
   pull_request:
@@ -17,13 +23,28 @@ jobs:
     name: Discover apps
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.apps.outputs.addons_list }}
+      apps: ${{ steps.select.outputs.apps }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v7.0.1
       - name: Find app directories
         id: apps
         uses: home-assistant/actions/helpers/find-addons@master
+      - name: Select apps to lint
+        id: select
+        shell: bash
+        env:
+          ALL_APPS: ${{ steps.apps.outputs.addons_list }}
+          REQUESTED_APP: ${{ inputs.app || '' }}
+        run: |
+          if [[ -z "$REQUESTED_APP" ]]; then
+            echo "apps=$ALL_APPS" >> "$GITHUB_OUTPUT"
+          elif jq -e --arg app "$REQUESTED_APP" 'index($app) != null' <<< "$ALL_APPS" >/dev/null; then
+            echo "apps=$(jq -nc --arg app "$REQUESTED_APP" '[$app]')" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unknown app directory: $REQUESTED_APP" >&2
+            exit 1
+          fi
 
   lint:
     name: Lint ${{ matrix.app }}

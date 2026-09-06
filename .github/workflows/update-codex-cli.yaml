@@ -1,0 +1,91 @@
+name: Update Codex CLI
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-codex-cli
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Check for a new Codex CLI release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Compare Codex CLI versions
+        id: versions
+        shell: bash
+        run: |
+          current="$(sed -n 's/^ARG CODEX_VERSION=//p' codex-cli/Dockerfile)"
+          latest="$(npm view --silent @openai/codex version)"
+
+          if [[ ! "$current" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid current Codex CLI version: $current" >&2
+            exit 1
+          fi
+          if [[ ! "$latest" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid latest Codex CLI version: $latest" >&2
+            exit 1
+          fi
+
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          newest="$(printf '%s\n' "$current" "$latest" | sort -V | tail -n 1)"
+          if [[ "$current" == "$latest" ]]; then
+            echo "has_update=false" >> "$GITHUB_OUTPUT"
+          elif [[ "$newest" != "$latest" ]]; then
+            echo "Published version $latest is not newer than pinned version $current; skipping."
+            echo "has_update=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_update=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update pinned and app versions
+        if: steps.versions.outputs.has_update == 'true'
+        run: node .github/scripts/update-codex-cli.mjs "${{ steps.versions.outputs.latest }}"
+
+      - name: Create or update pull request
+        if: steps.versions.outputs.has_update == 'true'
+        id: pull_request
+        uses: peter-evans/create-pull-request@v8.1.1
+        with:
+          add-paths: |
+            README.md
+            codex-cli/CHANGELOG.md
+            codex-cli/Dockerfile
+            codex-cli/config.yaml
+          branch: automation/update-codex-cli
+          commit-message: Update Codex CLI to ${{ steps.versions.outputs.latest }}
+          delete-branch: true
+          title: Update Codex CLI to ${{ steps.versions.outputs.latest }}
+          body: |
+            Updates the Codex CLI version bundled with the Home Assistant app.
+
+            - Previous CLI: `${{ steps.versions.outputs.current }}`
+            - New CLI: `${{ steps.versions.outputs.latest }}`
+            - The Home Assistant app patch version is incremented automatically.
+            - Lint and non-publishing multi-architecture builds are dispatched for this branch.
+
+            This pull request was created by the weekly Codex CLI update workflow.
+
+      - name: Run app verification workflows
+        if: steps.pull_request.outputs.pull-request-operation != 'none'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_BRANCH: automation/update-codex-cli
+        run: |
+          gh workflow run builder.yaml --ref "$UPDATE_BRANCH" \
+            -f app=codex-cli \
+            -f publish=false
+          gh workflow run lint.yaml --ref "$UPDATE_BRANCH" \
+            -f app=codex-cli

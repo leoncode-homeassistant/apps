@@ -244,3 +244,15 @@ update the app option and restart the app again.
 Home Assistant detects updates through the version in `config.yaml`. The
 repository publishes a matching multi-architecture image for each release.
 Codex state under `/data` is retained during normal updates.
+
+A scheduled GitHub Actions workflow checks the stable `@openai/codex` npm
+release every Monday. When a newer version exists, it opens or updates a pull
+request that changes the pinned CLI version, increments the Home Assistant app
+patch version, and updates the changelog. The workflow then dispatches the app
+linter and non-publishing `amd64` and `aarch64` builds for that branch. Images
+are published only after the pull request is reviewed and merged into `main`.
+
+For custom model providers, this workflow updates the Codex client but does not
+change the configured provider or model identifier. New models become usable
+only after the custom provider offers them and the matching identifier is set
+in `codex_model`.
