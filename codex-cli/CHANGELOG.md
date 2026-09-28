@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.3
+
+- Updates OpenAI Codex CLI from `0.153.4` to `0.158.0`.
 ## 0.3.2
 
 - Updates OpenAI Codex CLI from `0.146.1` to `0.153.4`.
