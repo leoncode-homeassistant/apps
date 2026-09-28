@@ -1,5 +1,5 @@
 name: Codex CLI
-version: "0.3.2"
+version: "0.3.3"
 slug: codex_cli
 description: Run Codex CLI as a secure SSH workspace on Home Assistant OS
 url: "https://github.com/leoncode-homeassistant/apps/tree/main/codex-cli"
