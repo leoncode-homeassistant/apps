@@ -3,7 +3,8 @@ name: Update Codex CLI
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 4 * * 1"
+    # GitHub schedules use UTC. The time gate below selects 03:00 Europe/Berlin.
+    - cron: "0 1,2 * * *"
 
 permissions:
   actions: write
@@ -15,9 +16,28 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  time-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - name: Select the Berlin 03:00 schedule
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ "$EVENT_NAME" != schedule || "$(TZ=Europe/Berlin date +%H)" == 03 ]]; then
+            echo 'run=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'run=false' >> "$GITHUB_OUTPUT"
+          fi
+
   update:
     name: Check for a new Codex CLI release
+    needs: time-gate
+    if: needs.time-gate.outputs.run == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@v7.0.1
@@ -76,10 +96,11 @@ jobs:
             - The Home Assistant app patch version is incremented automatically.
             - Lint and non-publishing multi-architecture builds are dispatched for this branch.
 
-            This pull request was created by the weekly Codex CLI update workflow.
+            This pull request was created by the nightly Codex CLI update workflow.
+            Auto-merge is enabled only when main requires lint and both architecture builds.
 
       - name: Run app verification workflows
-        if: steps.pull_request.outputs.pull-request-operation != 'none'
+        if: steps.pull_request.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ github.token }}
           UPDATE_BRANCH: automation/update-codex-cli
@@ -89,3 +110,10 @@ jobs:
             -f publish=false
           gh workflow run lint.yaml --ref "$UPDATE_BRANCH" \
             -f app=codex-cli
+
+      - name: Enable guarded auto-merge and publish after merge
+        if: steps.pull_request.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pull_request.outputs.pull-request-number }}
+        run: bash .github/scripts/auto-merge-codex-cli.sh

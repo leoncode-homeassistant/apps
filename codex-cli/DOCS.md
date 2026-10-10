@@ -246,11 +246,28 @@ repository publishes a matching multi-architecture image for each release.
 Codex state under `/data` is retained during normal updates.
 
 A scheduled GitHub Actions workflow checks the stable `@openai/codex` npm
-release every Monday. When a newer version exists, it opens or updates a pull
+release nightly at approximately 03:00 Europe/Berlin (including daylight saving
+time). GitHub may delay scheduled runs; a run delayed beyond the local 03:00
+hour is skipped. Manual dispatch is always available. When a newer version
+exists, it opens or updates a pull
 request that changes the pinned CLI version, increments the Home Assistant app
 patch version, and updates the changelog. The workflow then dispatches the app
 linter and non-publishing `amd64` and `aarch64` builds for that branch. Images
-are published only after the pull request is reviewed and merged into `main`.
+are published after GitHub auto-merges the pull request into `main`.
+
+Repository administrators must enable auto-merge and configure branch protection
+for `main` with up-to-date branches and these required status checks:
+
+- `Lint codex-cli`
+- `Build codex-cli / Build codex-cli for amd64`
+- `Build codex-cli / Build codex-cli for aarch64`
+
+The updater refuses to enable auto-merge if these requirements are absent. It
+only enables auto-merge for the GitHub Actions bot's same-repository
+`automation/update-codex-cli` branch. It waits up to 30 minutes for the merge and
+then explicitly dispatches the publishing Builder because merges using
+`GITHUB_TOKEN` may not trigger push workflows. If a merge occurs after this wait
+times out and no publishing run starts, manually dispatch Builder on `main`.
 
 For custom model providers, this workflow updates the Codex client but does not
 change the configured provider or model identifier. New models become usable

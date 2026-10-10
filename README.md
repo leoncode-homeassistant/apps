@@ -55,9 +55,12 @@ requests are linted and built without publishing images. Changes merged into
 `main` publish versioned `amd64` and `aarch64` images to the GitHub Container
 Registry.
 
-The Codex CLI app checks weekly for stable upstream CLI releases. Updates are
-proposed as pull requests and receive lint plus non-publishing multi-architecture
-builds before they can be merged and published.
+The Codex CLI app checks nightly at approximately 03:00 Europe/Berlin for stable
+upstream CLI releases. Updates are proposed as pull requests and automatically
+merged after required lint and both architecture builds pass. The updater checks
+main's branch protection before enabling auto-merge and explicitly dispatches
+publication after the merge. Repository auto-merge must be enabled; main must
+require up-to-date branches and the three checks described in the app docs.
 
 ## Security
 
