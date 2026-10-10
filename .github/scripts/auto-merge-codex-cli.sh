@@ -5,16 +5,24 @@ set -euo pipefail
 : "${PR_NUMBER:?}"
 
 # Fail closed until GitHub is configured to require all three checks.
-protection="$(gh api "repos/$GITHUB_REPOSITORY/branches/main/protection/required_status_checks")"
+protection="$(gh api graphql -f owner="${GITHUB_REPOSITORY%/*}" \
+    -f name="${GITHUB_REPOSITORY#*/}" \
+    -f query='query($owner:String!, $name:String!) {
+      repository(owner:$owner, name:$name) {
+        branchProtectionRules(first:100) {
+          nodes { pattern requiresStrictStatusChecks requiredStatusCheckContexts }
+        }
+      }
+    }' --jq '.data.repository.branchProtectionRules.nodes[] | select(.pattern == "main")')"
 for check in \
     'Lint codex-cli' \
     'Build codex-cli / Build codex-cli for amd64' \
     'Build codex-cli / Build codex-cli for aarch64'; do
     jq -e --arg check "$check" \
-        '([.contexts[]?, .checks[]?.context] | index($check)) != null' \
+        '(.requiredStatusCheckContexts | index($check)) != null' \
         <<< "$protection" >/dev/null
 done
-jq -e '.strict == true' <<< "$protection" >/dev/null
+jq -e '.requiresStrictStatusChecks == true' <<< "$protection" >/dev/null
 
 pr="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
     --json headRefName,headRefOid,baseRefName,isCrossRepository,author,state)"
